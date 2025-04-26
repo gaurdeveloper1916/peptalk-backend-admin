@@ -1,0 +1,36 @@
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const authRoutes = require("./routes/auth");
+const blogRoutes = require("./routes/blogs");
+const authMiddleware = require("./middleware/auth");
+
+const app = express();
+
+const allowedOrigin = "http://localhost:3000/";
+
+app.use(
+  cors({
+    origin: allowedOrigin,
+    credentials: true,
+  })
+);
+
+app.use(bodyParser.json());
+
+app.use("/auth", authRoutes);
+app.use("/blogs", authMiddleware, blogRoutes);
+
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    app.listen(process.env.PORT, () =>
+      console.log(`Server running on port ${process.env.PORT}`)
+    );
+  })
+  .catch((err) => console.error(err));
