@@ -1,4 +1,5 @@
 const express = require("express");
+const multer = require("multer")
 const Blog = require("../models/Blog");
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -64,7 +65,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-app.post("/upload", upload.single("image"), async (req, res) => {
+router.post("/upload", upload.single("image"), async (req, res) => {
   try {
     const fileBuffer = req.file.buffer;
     const base64 = fileBuffer.toString("base64");
