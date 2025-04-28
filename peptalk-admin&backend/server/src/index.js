@@ -7,7 +7,7 @@ const authRoutes = require("./routes/auth");
 const blogRoutes = require("./routes/blogs");
 const authMiddleware = require("./middleware/auth");
 const InquiryRoutes = require("./routes/user")
-
+const authUser = require("./routes/authUser")
 const app = express();
 
 const allowedOrigin = "http://localhost:5173/";
@@ -23,6 +23,7 @@ app.use(bodyParser.json());
 
 app.use("/auth", authRoutes);
 app.use("/blogs", authMiddleware, blogRoutes);
+app.use("/auth/user",authMiddleware,authUser)
 app.use("/user",InquiryRoutes)
 
 console.log(process.env.MONGO_URI)
