@@ -12,7 +12,7 @@ module.exports = {
       {
         name: 'peptalk_backend_prod',
         script: 'npm',
-        args: 'dev',
+        args: 'run start',
         exp_backoff_restart_delay: 100,
         env_production: {
           NODE_ENV: "production",
