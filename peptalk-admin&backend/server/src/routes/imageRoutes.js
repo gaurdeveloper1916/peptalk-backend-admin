@@ -1,4 +1,3 @@
-// routes/imageRoutes.js
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
@@ -6,28 +5,23 @@ const fs = require('fs');
 
 const router = express.Router();
 
-// Define the directory to store uploaded images
 const UPLOAD_DIR = './uploads';
 
-// Make sure the upload directory exists
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR);
 }
 
-// Set up storage engine for multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, UPLOAD_DIR);  // Where files should be uploaded
+    cb(null, UPLOAD_DIR);  
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));  // Renaming the file to avoid overwriting
+    cb(null, Date.now() + path.extname(file.originalname)); 
   }
 });
 
-// Initialize multer with the storage configuration
 const upload = multer({ storage });
 
-// Route to upload an image
 router.post('/upload', upload.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).send('No file uploaded.');
@@ -39,10 +33,8 @@ router.post('/upload', upload.single('image'), (req, res) => {
   });
 });
 
-// Route to serve static images from the "uploads" directory
 router.use('/images', express.static(UPLOAD_DIR));
 
-// Route to list all uploaded images
 router.get('/images', (req, res) => {
   fs.readdir(UPLOAD_DIR, (err, files) => {
     if (err) {
