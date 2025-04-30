@@ -22,11 +22,11 @@ app.use(
 
 app.use(bodyParser.json());
 
-// app.use("/",((res,req)=>{
-//     req.send(({
-//       mesaage:"working"
-//     }))
-// }))
+app.use("/health",((res,req)=>{
+    req.send(({
+      mesaage:"working"
+    }))
+}))
 app.use("/auth", authRoutes);
 app.use("/blogs", authMiddleware, blogRoutes);
 app.use("/auth/user", authMiddleware, authUser)
