@@ -12,7 +12,7 @@ const InquiryRoutes = require("./routes/user")
 const authUser = require("./routes/authUser")
 const imageRoutes = require("./routes/imageRoutes")
 const app = express();
-const allowedOrigin = "http://localhost:5173/";
+const allowedOrigin = "http://localhost:5501/";
 app.use(
   cors({
     origin: allowedOrigin,
