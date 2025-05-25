@@ -1,13 +1,9 @@
-
-
 const express = require("express");
-
 const Inquiry = require("../models/Inquiry");
 const Newsletter = require("../models/Newsletter");
-
+const Blog = require("../models/Blog");
+const Admission = require("../models/Admission");
 const router = express.Router();
-
-
 router.post('/inquiry', async (req, res) => {
     try {
         const { fullName, email, phoneNumber, city, message } = req.body;
@@ -50,5 +46,67 @@ router.post('/newsletter', async (req, res) => {
     }
 });
 
+router.get('/blogs', async (req, res) => {
+    try {
+        const blogs = await Blog.find({}) // latest first
+        res.status(200).json({ success: true, data: blogs });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+});
 
+router.post("/admission", async (req, res) => {
+    try {
+        const {
+            fullName,
+            dob,
+            gender,
+            email,
+            phone,
+            address,
+            education,
+            occupation,
+            course,
+            goals,
+            referral,
+        } = req.body;
+
+        const emailExists = await Admission.findOne({ email: req.body.email });
+        if (emailExists) {
+            return res.status(400).json({
+                success: false,
+                message: "Email already exists",
+            });
+        }
+
+        const admission = new Admission({
+            fullName,
+            dob,
+            gender,
+            email,
+            phone,
+            address,
+            education,
+            occupation,
+            course,
+            goals,
+            referral,
+        });
+
+        await admission.save();
+
+        res.status(201).json({
+            success: true,
+            message: "Admission form submitted successfully!",
+        });
+    } catch (error) {
+        console.error("Admission submission error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Server Error: Could not submit admission form.",
+        });
+    }
+});
 module.exports = router;
+
