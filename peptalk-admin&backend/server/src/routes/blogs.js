@@ -7,22 +7,30 @@ const upload = multer({ storage: multer.memoryStorage() });
 // Get all blogs
 router.get("/", async (req, res) => {
   try {
-    const blogs = await Blog.find();
+    const blogs = await Blog.find().populate("comments");
     res.status(200).send(blogs);
   } catch (error) {
-    console.error("Error fetching blogs:", error);
     res.status(500).send({ message: "Server error while fetching blogs" });
   }
 });
 
-// Get a single blog by ID
+
 router.get("/:id", async (req, res) => {
+
   try {
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findById(req.params.id).populate('comments');
     if (!blog) return res.status(404).send({ message: "Blog not found" });
-    res.status(200).send(blog);
+
+    const otherBlogs = await Blog.aggregate([
+      { $match: { _id: { $ne: blog._id } } },
+      { $sample: { size: 2 } }
+    ])
+    res.status(200).send({
+      blog,
+      suggested: otherBlogs
+    });
+
   } catch (error) {
-    console.error("Error fetching blog:", error);
     res.status(500).send({ message: "No Data Found" });
   }
 });
@@ -34,7 +42,6 @@ router.post("/", async (req, res) => {
     await blog.save();
     res.status(201).send({ message: "Blog created successfully", blog });
   } catch (error) {
-    console.error("Error creating blog:", error);
     res.status(500).send({ message: "Server error while creating blog" });
   }
 });
