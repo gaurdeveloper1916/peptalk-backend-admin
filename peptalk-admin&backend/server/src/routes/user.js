@@ -60,9 +60,8 @@ router.get('/blogs', async (req, res) => {
     }
 });
 router.get("/blogs/:id", async (req, res) => {
-
     try {
-        const blog = await Blog.findById(req.params.id).populate({
+        const blog = await Blog.find({slug:req.params.id}).populate({
             path: 'comments',
             select: 'name message'
         });
