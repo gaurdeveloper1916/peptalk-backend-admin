@@ -48,11 +48,37 @@ router.post('/newsletter', async (req, res) => {
 
 router.get('/blogs', async (req, res) => {
     try {
-        const blogs = await Blog.find({}) // latest first
-        res.status(200).json({ success: true, data: blogs });
+        const blogs = await Blog.find().populate({
+            path: 'comments',
+            select: 'name message'
+        });
+          
+        res.status(200).send({blogs});
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: 'Server Error' });
+    }
+});
+router.get("/blogs/:id", async (req, res) => {
+
+    try {
+        const blog = await Blog.findById(req.params.id).populate({
+            path: 'comments',
+            select: 'name message'
+        });
+        if (!blog) return res.status(404).send({ message: "Blog not found" });
+
+        const otherBlogs = await Blog.aggregate([
+            { $match: { _id: { $ne: blog._id } } },
+            { $sample: { size: 4 } }
+        ])
+        res.status(200).send({
+            blog,
+            suggested: otherBlogs
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: "No Data Found" });
     }
 });
 
