@@ -9,6 +9,7 @@ const authRoutes = require("./routes/auth");
 const blogRoutes = require("./routes/blogs");
 const userRoute = require("./routes/userBlog")
 const authMiddleware = require("./middleware/auth");
+const category = require("./routes/category")
 const InquiryRoutes = require("./routes/user")
 const authUser = require("./routes/authUser")
 const imageRoutes = require("./routes/imageRoutes")
@@ -31,6 +32,8 @@ app.get('/health',((res,req)=>{
 
 app.use("/auth", authRoutes);
 app.use("/blogs", authMiddleware, blogRoutes);
+app.use("/category", authMiddleware,category );
+
 app.use("/user/blog", userRoute);
 app.use("/auth/user", authMiddleware, authUser)
 app.use("/user", InquiryRoutes)

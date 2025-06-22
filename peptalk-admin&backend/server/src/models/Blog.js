@@ -5,15 +5,24 @@ const blogSchema = new mongoose.Schema({
   excerpt: String,
   content: Object,
   coverImage: String,
+  category: String,
+  writtenBy: String,
   status: { type: String, enum: ['draft', 'published'], default: 'draft' }
 }, { timestamps: true });
 
 blogSchema.virtual('comments', {
-  ref: 'Comment',               
-  localField: '_id',            
-  foreignField: 'blog',        
-  justOne: false             
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'blog',
+  justOne: false
 });
+
+// blogSchema.virtual('category', {
+//   ref: 'Category',
+//   localField: "_id",
+//   foreignField: 'blog',
+//   justOne: true
+// })
 
 blogSchema.set('toObject', { virtuals: true });
 blogSchema.set('toJSON', { virtuals: true });
